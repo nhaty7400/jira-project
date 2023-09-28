@@ -1,0 +1,63 @@
+.title{
+    font-size: 3rem;
+}
+
+.column-2{
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-group{
+    width: 47%;
+}
+
+input{
+    padding: 1rem 3rem 1rem 1rem;
+    background-color: white;
+    border: 0.1rem solid #949494;
+    border-radius: 0.5rem;
+    display: inline-block;
+    width: 100%;
+}
+
+textarea{
+    border: 0.1rem solid #949494;
+    min-height: 20rem;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-family: 'Roboto';
+}
+
+.button-group{
+    position: absolute;
+    right:5rem;
+    margin-top: 3rem;
+    .cancel-button{
+        margin-right: 3rem;
+        width: 9rem;
+        height: 4rem;
+        border: 0.1rem solid black;
+        border-radius: 0.5rem;
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        transition: background-color .3s;
+        &:hover{
+            background-color: #949494;
+        }
+    }
+    .submit-button{
+        width: 9rem;
+        height: 4rem;
+        border: none;
+        border-radius: 0.5rem;
+        background-color: #518EF8;
+        color: white;
+        font-weight: bold;
+        transition: all .3s;
+        &:hover{
+            background-color: #196DFE;
+            color: #949494;
+        }
+    }
+}
