@@ -14,18 +14,21 @@
 input{
     padding: 1rem 3rem 1rem 1rem;
     background-color: white;
-    border: 0.1rem solid #949494;
+    border: 0.1rem solid #d9d9d9;
     border-radius: 0.5rem;
     display: inline-block;
     width: 100%;
+    font-size: 1.4rem;
 }
 
 textarea{
-    border: 0.1rem solid #949494;
+    border: 0.1rem solid #d9d9d9;
     min-height: 20rem;
+    width: 100%;
     border-radius: 0.5rem;
     padding: 1rem;
     font-family: 'Roboto';
+    font-size: 1.4rem;
 }
 
 .button-group{
@@ -60,4 +63,8 @@ textarea{
             color: #949494;
         }
     }
+}
+
+.form-group-des{
+    width: 100%;
 }

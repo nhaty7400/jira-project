@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import css from "./create-task.module.scss";
-import Dropdown from "../../../components/dropdown/dropdown";
+import type { SelectProps } from "antd";
+import { Select, Space } from "antd";
+
+const assignessOptions: SelectProps["options"] = [];
+const filterOption = (
+  input: string,
+  option?: { label: string; value: string }
+) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
+for (let i = 10; i < 36; i++) {
+  assignessOptions.push({
+    label: i.toString(36) + i,
+    value: i.toString(36) + i,
+  });
+}
 
 function CreateTask() {
-  const options = ["Option 1", "Option 2", "Option 3"];
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-
-  const handleDropdownSelect = (selectedValue: string) => {
-    setSelectedOption(selectedValue);
-  };
   return (
     <div>
       <h1 className={css["title"]}>Create task</h1>
@@ -16,7 +24,26 @@ function CreateTask() {
         <div className={css["column-2"]}>
           <div className={css["form-group"]}>
             <p className={css["input-label"]}>Project</p>
-            <Dropdown options={options} onSelect={handleDropdownSelect} />
+            <Select style={{width:"100%"}}
+              showSearch
+              placeholder="Please select"
+              optionFilterProp="children"
+              filterOption={filterOption}
+              options={[
+                {
+                  value: "jack",
+                  label: "Jack",
+                },
+                {
+                  value: "lucy",
+                  label: "Lucy",
+                },
+                {
+                  value: "tom",
+                  label: "Tom",
+                },
+              ]}
+            />
           </div>
           <div className={css["form-group"]}>
             <p className={css["input-label"]}>Task name</p>
@@ -26,17 +53,74 @@ function CreateTask() {
         <div className={css["column-2"]}>
           <div className={css["form-group"]}>
             <p className={css["input-label"]}>Status</p>
-            <Dropdown options={options} onSelect={handleDropdownSelect} />
+            <Select style={{width:"100%"}}
+              showSearch
+              placeholder="Please select"
+              optionFilterProp="children"
+              filterOption={filterOption}
+              options={[
+                {
+                  value: "jack",
+                  label: "Jack",
+                },
+                {
+                  value: "lucy",
+                  label: "Lucy",
+                },
+                {
+                  value: "tom",
+                  label: "Tom",
+                },
+              ]}
+            />
           </div>
           <div className={css["form-group"]}>
             <div className={css["column-2"]}>
               <div className={css["form-group"]}>
                 <p className={css["input-label"]}>Priority</p>
-                <Dropdown options={options} onSelect={handleDropdownSelect} />
+                <Select style={{width:"100%"}}
+                  showSearch
+                  placeholder="Please select"
+                  optionFilterProp="children"
+                  filterOption={filterOption}
+                  options={[
+                    {
+                      value: "jack",
+                      label: "Jack",
+                    },
+                    {
+                      value: "lucy",
+                      label: "Lucy",
+                    },
+                    {
+                      value: "tom",
+                      label: "Tom",
+                    },
+                  ]}
+                />
               </div>
               <div className={css["form-group"]}>
                 <p className={css["input-label"]}>Task type</p>
-                <Dropdown options={options} onSelect={handleDropdownSelect} />
+                <Select style={{width:"100%"}}
+                  showSearch
+                  placeholder="Please select"
+                  optionFilterProp="children"
+                  filterOption={filterOption}
+                  options={[
+                    {
+                      value: "jack",
+                      label: "Jack",
+                    },
+                    {
+                      value: "lucy",
+                      label: "Lucy",
+                    },
+                    {
+                      value: "tom",
+                      label: "Tom",
+                    },
+                  ]}
+                />
               </div>
             </div>
           </div>
@@ -44,7 +128,16 @@ function CreateTask() {
         <div className={css["column-2"]}>
           <div className={css["form-group"]}>
             <p className={css["input-label"]}>Assignees</p>
-            <input></input>
+            <Space style={{ width: "100%" }} direction="vertical">
+              <Select 
+                mode="multiple"
+                allowClear
+                style={{ width: "100%" }}
+                placeholder="Please select"
+                defaultValue={["a10", "c12"]}
+                options={assignessOptions}
+              />
+            </Space>
           </div>
           <div className={css["form-group"]}>
             <div className={css["column-2"]}>
@@ -68,16 +161,16 @@ function CreateTask() {
           </div>
         </div>
         <div className={css["column-2"]}>
-          <div className={css["form-group"]}>
+          <div className={css["form-group-des"]}>
             <p className={css["input-label"]}>Description</p>
             <textarea placeholder="Enter your description..."></textarea>
           </div>
         </div>
       </form>
       <div className={css["button-group"]}>
-          <button className={css["cancel-button"]}>Cancel</button>
-          <button className={css["submit-button"]}>Submit</button>
-        </div>
+        <button className={css["cancel-button"]}>Cancel</button>
+        <button className={css["submit-button"]}>Submit</button>
+      </div>
     </div>
   );
 }
