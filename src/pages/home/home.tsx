@@ -1,5 +1,5 @@
 import { SearchOutlined } from "@ant-design/icons";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import type { InputRef } from "antd";
 import {
@@ -18,6 +18,14 @@ import EditIcon from "../../assets/icons/edit.icon";
 import DeleteIcon from "../../assets/icons/delete.icon";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../redux/config-store";
+import { useDispatch } from "react-redux";
+import { getAllProject } from "../../services/project.service";
+import { setListProject } from "../../redux/slice/project.slice";
+import { setLocalStorage } from "../../utils";
+import { ACCESS_TOKEN } from "../../constants";
+import { getUser } from "../../services/user.service";
+import { setListUserSearch } from "../../redux/slice/user.slice";
 
 interface Creator {
   id: number;
@@ -42,290 +50,41 @@ interface DataType {
   description: any;
 }
 
-type DataIndex = keyof DataType;
 
-const data: DataType[] = [
-  {
-    members: [
-      {
-        userId: 5581,
-        name: "Abhishek Raj",
-        avatar: "https://ui-avatars.com/api/?name=Abhishek Raj",
-      },
-    ],
-    creator: {
-      id: 5581,
-      name: "Abhishek Raj",
-    },
-    id: 13436,
-    projectName: "ABhkdfkas",
-    description: "<p>sdfas</p>",
-    categoryId: 3,
-    categoryName: "Dự án di động",
-    alias: "abhkdfkas",
-    deleted: false,
-  },
-  {
-    members: [
-      {
-        userId: 5328,
-        name: "Ngô Thanh Phong",
-        avatar: "https://ui-avatars.com/api/?name=Ngô Thanh Phong",
-      },
-      {
-        userId: 3962,
-        name: "Đây là tên ",
-        avatar: "https://ui-avatars.com/api/?name=Đây là tên ",
-      },
-    ],
-    creator: {
-      id: 5583,
-      name: "thong",
-    },
-    id: 13437,
-    projectName: "thongtest2",
-    description: "<p>abc</p>",
-    categoryId: 2,
-    categoryName: "Dự án phần mềm",
-    alias: "thongtest2",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 2417,
-      name: "thinh2345",
-    },
-    id: 13438,
-    projectName: "hoang project",
-    description: "<p>text</p>",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "hoang-project",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 2417,
-      name: "thinh2345",
-    },
-    id: 13439,
-    projectName: "hoang project 1",
-    description: "<p>text</p>",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "hoang-project-1",
-    deleted: false,
-  },
-  {
-    members: [
-      {
-        userId: 5515,
-        name: "hoàng",
-        avatar: "https://ui-avatars.com/api/?name=hoàng",
-      },
-      {
-        userId: 3962,
-        name: "Đây là tên ",
-        avatar: "https://ui-avatars.com/api/?name=Đây là tên ",
-      },
-    ],
-    creator: {
-      id: 5515,
-      name: "hoàng",
-    },
-    id: 13448,
-    projectName: "hoang project 2",
-    description: "<p>string</p>",
-    categoryId: 3,
-    categoryName: "Dự án di động",
-    alias: "hoang-project-2",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 5575,
-      name: "tung tung",
-    },
-    id: 13450,
-    projectName: "Nguyen Quang Quyen",
-    description: "<p>123</p>",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "nguyen-quang-quyen",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 5587,
-      name: "long",
-    },
-    id: 13451,
-    projectName: "jira5933",
-    description: "",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "jira5933",
-    deleted: false,
-  },
-  {
-    members: [
-      {
-        userId: 2417,
-        name: "thinh2345",
-        avatar: "https://ui-avatars.com/api/?name=thinh2345",
-      },
-      {
-        userId: 2537,
-        name: "Mehmet129",
-        avatar: "https://ui-avatars.com/api/?name=Mehmet129",
-      },
-    ],
-    creator: {
-      id: 5577,
-      name: "long",
-    },
-    id: 13460,
-    projectName: "123",
-    description: "<p>456</p>",
-    categoryId: 3,
-    categoryName: "Dự án di động",
-    alias: "123",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 5577,
-      name: "long",
-    },
-    id: 13461,
-    projectName: "12",
-    description: "<p>1314s</p>",
-    categoryId: 3,
-    categoryName: "Dự án di động",
-    alias: "12",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 5629,
-      name: "123456",
-    },
-    id: 13463,
-    projectName: "eqseqwe",
-    description: "<p>eqwewq</p>",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "eqseqwe",
-    deleted: false,
-  },
-  {
-    members: [],
-    creator: {
-      id: 2417,
-      name: "thinh2345",
-    },
-    id: 13465,
-    projectName: "c12",
-    description: "string",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "c12",
-    deleted: false,
-  },
-  {
-    members: [
-      {
-        userId: 2909,
-        name: "tên",
-        avatar: "https://ui-avatars.com/api/?name=tên",
-      },
-      {
-        userId: 2537,
-        name: "Mehmet129",
-        avatar: "https://ui-avatars.com/api/?name=Mehmet129",
-      },
-    ],
-    creator: {
-      id: 5633,
-      name: "Nghĩa",
-    },
-    id: 13469,
-    projectName: "Testabc123",
-    description: "",
-    categoryId: 2,
-    categoryName: "Dự án phần mềm",
-    alias: "testabc123",
-    deleted: false,
-  },
-  {
-    members: [
-      {
-        userId: 5634,
-        name: "Nghĩa",
-        avatar: "https://ui-avatars.com/api/?name=Nghĩa",
-      },
-      {
-        userId: 2417,
-        name: "thinh2345",
-        avatar: "https://ui-avatars.com/api/?name=thinh2345",
-      },
-    ],
-    creator: {
-      id: 5634,
-      name: "Nghĩa",
-    },
-    id: 13470,
-    projectName: "Capstone test",
-    description: "<p>abc</p>",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "capstone-test",
-    deleted: false,
-  },
-  {
-    members: [
-      {
-        userId: 2417,
-        name: "thinh2345",
-        avatar: "https://ui-avatars.com/api/?name=thinh2345",
-      },
-      {
-        userId: 2537,
-        name: "Mehmet129",
-        avatar: "https://ui-avatars.com/api/?name=Mehmet129",
-      },
-      {
-        userId: 5634,
-        name: "Nghĩa",
-        avatar: "https://ui-avatars.com/api/?name=Nghĩa",
-      },
-    ],
-    creator: {
-      id: 5635,
-      name: "Nghĩa",
-    },
-    id: 13471,
-    projectName: "BCS07 TEST",
-    description: "<p>ABC</p>",
-    categoryId: 1,
-    categoryName: "Dự án web",
-    alias: "bcs07-test",
-    deleted: false,
-  },
-];
+
+type DataIndex = keyof DataType;
 
 const Home: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // sau khi có login vào thì xóa
+    setLocalStorage(
+      ACCESS_TOKEN,
+      "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjeWJlcmxlYXJuNzQ3NEBnbWFpbC5jb20iLCJuYmYiOjE2OTY5MjYwMjUsImV4cCI6MTY5NjkyOTYyNX0.9GJwPXO8ZCHcKArFe21GQowiO4rEAHn1PUbwHzDHlRQ"
+    );
+    (async () => {
+      const resp = await getAllProject();
+
+      const action = setListProject(resp.content);
+
+      dispatch(action);
+    })();
+  }, []);
+
+  const data: DataType[] = useAppSelector((state) => {
+    return state.projectSlice.listProject;
+  });
+
+  const searchResult=useAppSelector((state)=>{
+    return state.userSlice.listUserSearch;
+  })
 
   const handleSearch = (
     selectedKeys: string[],
@@ -484,14 +243,29 @@ const Home: React.FC = () => {
             <Popover
               placement="bottom"
               title={() => {
-                return <span>Bottom</span>;
+                return <span>Add user</span>;
               }}
+              
               content={() => {
-                return <AutoComplete style={{width:"100%",}} />;
+                return (
+                  <AutoComplete
+                  options={searchResult?.map((user,index)=>{
+                    return {label:user.name,value:user.userId}
+                  })}
+                    style={{ width: "100%" }}
+                    onSearch={(value) => {
+                      (async ()=>{
+                        const resp=await getUser(value);
+                        const action=setListUserSearch(resp.content);
+                        dispatch(action);
+                      })();
+                    }}
+                  />
+                );
               }}
               trigger="click"
             >
-              <Button style={{borderRadius:"50%",}}>+</Button>
+              <Button style={{ borderRadius: "50%" }}>+</Button>
             </Popover>
           </div>
         );
