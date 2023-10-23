@@ -24,7 +24,7 @@ import { getAllProject } from "../../services/project.service";
 import { setListProject } from "../../redux/slice/project.slice";
 import { setLocalStorage } from "../../utils";
 import { ACCESS_TOKEN } from "../../constants";
-import { getUser } from "../../services/user.service";
+import { assignUserProject, getUser } from "../../services/user.service";
 import { setListUserSearch } from "../../redux/slice/user.slice";
 
 interface Creator {
@@ -50,41 +50,37 @@ interface DataType {
   description: any;
 }
 
-
-
 type DataIndex = keyof DataType;
 
 const Home: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [value, setValue] = useState("");
   const searchInput = useRef<InputRef>(null);
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
+  const data: DataType[] = useAppSelector((state) => {
+    return state.projectSlice.listProject;
+  });
+
   useEffect(() => {
-    // sau khi có login vào thì xóa
-    setLocalStorage(
-      ACCESS_TOKEN,
-      "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjeWJlcmxlYXJuNzQ3NEBnbWFpbC5jb20iLCJuYmYiOjE2OTY5MjYwMjUsImV4cCI6MTY5NjkyOTYyNX0.9GJwPXO8ZCHcKArFe21GQowiO4rEAHn1PUbwHzDHlRQ"
-    );
-    (async () => {
+  
+    const getListProject = async () => {
       const resp = await getAllProject();
 
       const action = setListProject(resp.content);
 
       dispatch(action);
-    })();
-  }, []);
+    };
+    getListProject();
+  }, [data]);
 
-  const data: DataType[] = useAppSelector((state) => {
-    return state.projectSlice.listProject;
-  });
-
-  const searchResult=useAppSelector((state)=>{
+  const searchResult = useAppSelector((state) => {
     return state.userSlice.listUserSearch;
-  })
+  });
 
   const handleSearch = (
     selectedKeys: string[],
@@ -245,18 +241,42 @@ const Home: React.FC = () => {
               title={() => {
                 return <span>Add user</span>;
               }}
-              
               content={() => {
                 return (
                   <AutoComplete
-                  options={searchResult?.map((user,index)=>{
-                    return {label:user.name,value:user.userId}
-                  })}
+                    options={searchResult?.map((user, index) => {
+                      return {
+                        label: user.name,
+                        value: user.userId.toString(),
+                      };
+                    })}
+                    value={value}
+                    onSelect={(valueSelect, option) => {
+                      setValue(option.label);
+                      const data = {
+                        projectId: record.id,
+                        userId: valueSelect,
+                      };
+                      assignUserProject(data)
+                        .then((resp) => {
+                          (async()=>{
+                            const resp=await getAllProject();
+                            dispatch(setListProject(resp.content));
+                            setValue("");
+                          })();
+                        })
+                        .catch((e) => {
+                          console.log(e);
+                        });
+                    }}
+                    onChange={(text) => {
+                      setValue(text);
+                    }}
                     style={{ width: "100%" }}
                     onSearch={(value) => {
-                      (async ()=>{
-                        const resp=await getUser(value);
-                        const action=setListUserSearch(resp.content);
+                      (async () => {
+                        const resp = await getUser(value);
+                        const action = setListUserSearch(resp.content);
                         dispatch(action);
                       })();
                     }}
