@@ -161,16 +161,14 @@ function CreateTask() {
           </div>
         </div>
         <div className={css["column-2"]}>
-          <div className={css["form-group-des"]}>
-            <p className={css["input-label"]}>Description</p>
-            <textarea placeholder="Enter your description..."></textarea>
-          </div>
+          
         </div>
-      </form>
-      <div className={css["button-group"]}>
+        <div className={css["button-group"]}>
         <button className={css["cancel-button"]}>Cancel</button>
         <button className={css["submit-button"]}>Submit</button>
       </div>
+      </form>
+      
     </div>
   );
 }

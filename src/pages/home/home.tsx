@@ -22,10 +22,10 @@ import { useAppSelector } from "../../redux/config-store";
 import { useDispatch } from "react-redux";
 import { getAllProject } from "../../services/project.service";
 import { setListProject } from "../../redux/slice/project.slice";
-import { setLocalStorage } from "../../utils";
-import { ACCESS_TOKEN } from "../../constants";
 import { assignUserProject, getUser } from "../../services/user.service";
 import { setListUserSearch } from "../../redux/slice/user.slice";
+import { openDrawer } from "../../redux/slice/drawer.slice";
+import FormEdit from "../../components/formEdit/formEdit";
 
 interface Creator {
   id: number;
@@ -67,7 +67,6 @@ const Home: React.FC = () => {
   });
 
   useEffect(() => {
-  
     const getListProject = async () => {
       const resp = await getAllProject();
 
@@ -259,8 +258,8 @@ const Home: React.FC = () => {
                       };
                       assignUserProject(data)
                         .then((resp) => {
-                          (async()=>{
-                            const resp=await getAllProject();
+                          (async () => {
+                            const resp = await getAllProject();
                             dispatch(setListProject(resp.content));
                             setValue("");
                           })();
@@ -300,7 +299,15 @@ const Home: React.FC = () => {
           <div>
             <button
               onClick={() => {
-                navigate(`editProject/${record.id}`);
+                const action = {
+                  id:record.id,
+                  projectName:record.projectName,
+                  creator:record.creator,
+                  description:record.description,
+                  categoryId:record.categoryId,
+                };
+
+                dispatch(openDrawer(action));
               }}
               className="btn me-2 btn-primary"
             >

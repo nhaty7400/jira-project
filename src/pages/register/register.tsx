@@ -20,6 +20,10 @@ const registerSchema = Y.object({
   confirmPassword: Y.string()
     .oneOf([Y.ref("password")], "Confirm password must match")
     .required("Bắt buộc nhập vào confirm password."),
+  phone: Y.string()
+    .required("Bắt buộc nhập vào phone.")
+    .min(9, "Phone phải từ 9 số.")
+    .max(10, "Phone phải dưới 10 số."),
 });
 
 export type TParamsRegister = {
@@ -122,23 +126,22 @@ function Register() {
                     {formik.errors.confirmPassword}
                   </p>
                 )}
-              
-              </div>
-              <div className={css["form-group"]}>
-                <p className={css["register-title"]}>Phone</p>
-                <input
-                  className={css["register-input"]}
-                  placeholder="Phone"
-                  {...formik.getFieldProps("phone")}
-                />
-                {formik.touched.phone && formik.errors.phone && (
-                  <p className={css["text-danger"]}>{formik.errors.phone}</p>
-                )}
-              </div>
-              <div className={css["button-container"]}>
-                <button className={css["submit-button"]} type="submit">
-                  Submit
-                </button>
+            </div>
+            <div className={css["form-group"]}>
+              <p className={css["register-title"]}>Phone</p>
+              <input
+                className={css["register-input"]}
+                placeholder="Phone"
+                {...formik.getFieldProps("phone")}
+              />
+              {formik.touched.phone && formik.errors.phone && (
+                <p className={css["text-danger"]}>{formik.errors.phone}</p>
+              )}
+            </div>
+            <div className={css["button-container"]}>
+              <button className={css["submit-button"]} type="submit">
+                Submit
+              </button>
             </div>
           </div>
         </div>

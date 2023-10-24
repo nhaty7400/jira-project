@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import ScrollToTop from "../../components/scroll-to-top/scroll-to-top";
 import SideBar from "./side-bar/side-bar";
 import css from "./base.template.scss"
+import DrawerCyber from "../../hoc/drawer";
 
 function BaseTemplate() {
     return (
@@ -10,6 +11,7 @@ function BaseTemplate() {
         padding:"2.5rem 3.2rem 5rem 34rem"
       }}>
         <ScrollToTop>
+          <DrawerCyber/>
        <SideBar/>
         <Suspense fallback={<>Loading...</>}>
           <Outlet />

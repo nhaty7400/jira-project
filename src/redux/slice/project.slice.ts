@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 type TState = {
   listProject: any[];
+  projectCategoryArr:any[];
 };
 
 const initialState:TState = {
   listProject: [],
+  projectCategoryArr:[],
 };
 
 const projectSlice = createSlice({
@@ -15,9 +17,12 @@ const projectSlice = createSlice({
     setListProject: (state, action) => {
       state.listProject = action.payload;
     },
+    setprojectCategoryArr:(state,action)=>{
+      state.projectCategoryArr=action.payload;
+    }
   },
 });
 
-export const { setListProject } = projectSlice.actions;
+export const { setListProject,setprojectCategoryArr } = projectSlice.actions;
 
 export default projectSlice.reducer;
