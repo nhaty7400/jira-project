@@ -3,10 +3,11 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import projectSlice from "./slice/project.slice";
 import userSlice from "./slice/user.slice";
 import drawerSlice from "./slice/drawer.slice";
+import taskSlice from "./slice/task.slice";
 
 // configureStore => redux-devtool
 export const store = configureStore({
-  reducer: {projectSlice,userSlice,drawerSlice}
+  reducer: {projectSlice,userSlice,drawerSlice,taskSlice}
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

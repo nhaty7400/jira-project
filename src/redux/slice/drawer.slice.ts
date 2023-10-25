@@ -7,13 +7,7 @@ type TState = {
 
 const initialState: TState = {
   visible: false,
-  projectValue: {
-    id: 0,
-    projectName: "string",
-    creator: 0,
-    description: "string",
-    categoryId: "string"
-  },
+  projectValue: null,
 };
 
 const drawerSlice = createSlice({

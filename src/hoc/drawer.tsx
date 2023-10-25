@@ -32,21 +32,19 @@ function DrawerCyber(props: any) {
               textAlign: "right",
             }}
           >
-            <Button
-              style={{
-                marginRight: "2rem",
-              }}
+            <button
+              className="btn btn-light fs-4 me-4"
               onClick={onClose}
             >
               Cancel
-            </Button>
-            <Button onClick={onClose} type="primary">
+            </button>
+            <button className="btn btn-primary fs-4" form="projectEditForm" type="submit">
               Submit
-            </Button>
+            </button>
           </div>
         }
       >
-       <FormEdit data={projectValue}/>
+       {projectValue?(<FormEdit data={projectValue}/>):(<p>select a project</p>)}
       </Drawer>
     </>
   );

@@ -16,16 +16,19 @@ import type { FilterConfirmProps } from "antd/es/table/interface";
 import { Tag } from "antd";
 import EditIcon from "../../assets/icons/edit.icon";
 import DeleteIcon from "../../assets/icons/delete.icon";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/config-store";
 import { useDispatch } from "react-redux";
-import { getAllProject } from "../../services/project.service";
+import {
+  deleteProject,
+  getAllProject,
+  removeUserFromProject,
+} from "../../services/project.service";
 import { setListProject } from "../../redux/slice/project.slice";
 import { assignUserProject, getUser } from "../../services/user.service";
 import { setListUserSearch } from "../../redux/slice/user.slice";
 import { openDrawer } from "../../redux/slice/drawer.slice";
-import FormEdit from "../../components/formEdit/formEdit";
 
 interface Creator {
   id: number;
@@ -198,10 +201,17 @@ const Home: React.FC = () => {
       title: "Project Name",
       dataIndex: "projectName",
       key: "projectName",
-      render: (text, record) => (
-        <Link to={`projectDetail/${record.id}`}>{text}</Link>
-      ),
-      ...getColumnSearchProps("projectName"),
+      render: (text: any, record: any, index: any) => {
+        return <Link style={{textDecoration:"none"}} to={`/projectDetail/${record.id}`}>{text}</Link>;
+      },
+      sorter: (item2, item1) => {
+        let creator1 = item1.creator?.name.trim().toLocaleLowerCase();
+        let creator2 = item2.creator?.name.trim().toLocaleLowerCase();
+        if (creator2 < creator1) {
+          return -1;
+        }
+        return 1;
+      },
     },
     {
       title: "Category name",
@@ -232,11 +242,79 @@ const Home: React.FC = () => {
         return (
           <div>
             {record.members?.slice(0, 3).map((member, index) => {
-              return <Avatar key={index} src={member.avatar} />;
+              return (
+                <Popover
+                  key={index}
+                  placement="bottom"
+                  title="Members"
+                  content={() => {
+                    return (
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>Id</th>
+                            <th>avatar</th>
+                            <th>name</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {record.members?.map((item, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{item.userId}</td>
+                                <td>
+                                  <img
+                                    src={item.avatar}
+                                    style={{
+                                      borderRadius: "50%",
+                                      width: "3rem",
+                                      height: "3rem",
+                                    }}
+                                    alt=""
+                                  />
+                                </td>
+                                <td>{item.name}</td>
+                                <td>
+                                  <button
+                                    onClick={() => {
+                                      let data = {
+                                        projectId: record.id,
+                                        userId: item.userId,
+                                      };
+                                      removeUserFromProject(data)
+                                        .then(() => {
+                                          (async () => {
+                                            const resp = await getAllProject();
+                                            dispatch(
+                                              setListProject(resp.content)
+                                            );
+                                          })();
+                                        })
+                                        .catch((e) => {
+                                          console.log(e);
+                                        });
+                                    }}
+                                    className="btn btn-danger"
+                                  >
+                                    Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    );
+                  }}
+                >
+                  <Avatar key={index} src={member.avatar} />
+                </Popover>
+              );
             })}
             {record.members?.length > 3 ? <Avatar>...</Avatar> : ""}
             <Popover
-              placement="bottom"
+              placement="rightTop"
               title={() => {
                 return <span>Add user</span>;
               }}
@@ -300,11 +378,11 @@ const Home: React.FC = () => {
             <button
               onClick={() => {
                 const action = {
-                  id:record.id,
-                  projectName:record.projectName,
-                  creator:record.creator,
-                  description:record.description,
-                  categoryId:record.categoryId,
+                  id: record.id,
+                  projectName: record.projectName,
+                  creator: record.creator.id,
+                  description: record.description,
+                  categoryId: record.categoryId,
                 };
 
                 dispatch(openDrawer(action));
@@ -313,7 +391,22 @@ const Home: React.FC = () => {
             >
               <EditIcon />
             </button>
-            <button className="btn btn-danger">
+            <button
+              onClick={() => {
+                deleteProject(record.id)
+                  .then(() => {
+                    (async () => {
+                      const resp = await getAllProject();
+                      dispatch(setListProject(resp.content));
+                    })();
+                    alert("Delete project successfully!");
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              }}
+              className="btn btn-danger"
+            >
               <DeleteIcon />
             </button>
           </div>
@@ -325,7 +418,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <h3>Project management</h3>
-      <Table columns={columns} dataSource={data} />;
+      <Table rowKey="Id" columns={columns} dataSource={data} />;
     </div>
   );
 };
