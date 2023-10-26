@@ -42,5 +42,12 @@ export const router = createBrowserRouter([
     ],
   },
   { index: true, path: "/", element: <Login /> },
-  { path: "register", element: <Register /> },
+  {
+    path: "register",
+    element: (
+      <Suspense fallback={<>Loading...</>}>
+        <Register />
+      </Suspense>
+    ),
+  },
 ]);
