@@ -24,11 +24,10 @@ function ProjectDetail() {
         console.log(err);
       });   
   }, [params.projectId]);
-  console.log(projectDetail);
 
   return <div>
     {projectDetail?(<InfoMain data={projectDetail}/>):(<p>wait a minute...</p>)}
-    <Content/>
+    {projectDetail?(<Content data={projectDetail}/>):(<p></p>)}
   </div>;
 }
 

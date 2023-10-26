@@ -20,6 +20,7 @@ export const getAllStatus = async () => {
     }
   };
 
+
   export const getTaskType = async () => {
     try {
       const resp = await axiosWithoutAuth("/TaskType/getAll");
@@ -29,3 +30,17 @@ export const getAllStatus = async () => {
       console.log(error);
     }
   };
+
+  export const createTask=async(data:any)=>{
+    try{
+      const resp=await axiosWithAuth({
+        method: "post",
+        url: "/Project/createTask",
+        data,
+      });
+  
+      return resp.data;
+    }catch(e){
+      console.log(e);
+    }
+  }

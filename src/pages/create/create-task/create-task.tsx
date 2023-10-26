@@ -1,6 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import css from "./create-task.module.scss";
-import type { SelectProps } from "antd";
 import { Select, Space, Slider } from "antd";
 import { Editor } from "@tinymce/tinymce-react";
 import { useFormik } from "formik";
@@ -9,6 +7,22 @@ import { useAppSelector } from "../../../redux/config-store";
 import { getAllProject } from "../../../services/project.service";
 import { useDispatch } from "react-redux";
 import { setListProject } from "../../../redux/slice/project.slice";
+import {
+  addAsignees,
+  deleteAsigness,
+  setPriority,
+  setStatus,
+  setType,
+} from "../../../redux/slice/task.slice";
+import { getUser } from "../../../services/user.service";
+import { setListUserSearch } from "../../../redux/slice/user.slice";
+import {
+  createTask,
+  getAllStatus,
+  getPriority,
+  getTaskType,
+} from "../../../services/task.service";
+import { useNavigate } from "react-router-dom";
 
 interface Creator {
   id: number;
@@ -33,21 +47,7 @@ interface DataType {
   description: any;
 }
 
-const assignessOptions: SelectProps["options"] = [];
-const filterOption = (
-  input: string,
-  option?: { label: string; value: string }
-) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-
-for (let i = 10; i < 36; i++) {
-  assignessOptions.push({
-    label: i.toString(36) + i,
-    value: i.toString(36) + i,
-  });
-}
-
 function CreateTask() {
-  const [value, setValue] = useState("");
   const editorRef: any = useRef(null);
   const log = () => {
     if (editorRef.current) {
@@ -55,50 +55,103 @@ function CreateTask() {
     }
   };
   const dispatch = useDispatch();
+  const navigate=useNavigate();
 
   const projectArr: DataType[] = useAppSelector((state) => {
     return state.projectSlice.listProject;
   });
+  const userSearchResult = useAppSelector((state) => {
+    return state.userSlice.listUserSearch;
+  });
+  const { asigneesArr,taskTypeArr, taskStatusArr, taskPriorityArr } = useAppSelector(
+    (state) => {
+      return state.taskSlice;
+    }
+  );
+
 
   useEffect(() => {
-    const getListProject = async () => {
+    (async () => {
       const resp = await getAllProject();
-
       const action = setListProject(resp.content);
-
       dispatch(action);
-    };
-    getListProject();
+    })();
+    (async () => {
+      const resp = await getUser("");
+      const action = setListUserSearch(resp.content);
+      dispatch(action);
+    })();
+    (async () => {
+      const resp = await getAllStatus();
+      const action = setStatus(resp.content);
+      dispatch(action);
+    })();
+    (async () => {
+      const resp = await getPriority();
+      const action = setPriority(resp.content);
+      dispatch(action);
+    })();
+    (async () => {
+      const resp = await getTaskType();
+      const action = setType(resp.content);
+      dispatch(action);
+    })();
   }, []);
 
-  
+  const formik: any = useFormik({
+    initialValues: {
+      listUserAsign: [],
+      taskName: "",
+      description: "",
+      statusId: "",
+      originalEstimate: 0,
+      timeTrackingSpent: 0,
+      timeTrackingRemaining: 0,
+      projectId: 0,
+      typeId: 0,
+      priorityId: 0,
+    },
 
-  // const formik: any = useFormik({
-  //   initialValues: {
-  //
-  //   },
+    enableReinitialize: true,
 
-  //   enableReinitialize: true,
+    onSubmit: (value) => {
+      const taskData: any = {
+        listUserAsign: asigneesArr,
+        taskName: value.taskName,
+        description: log(),
+        statusId: value.statusId,
+        originalEstimate: +value.originalEstimate,
+        timeTrackingSpent: +value.timeTrackingSpent,
+        timeTrackingRemaining: +value.timeTrackingRemaining,
+        projectId: +value.projectId,
+        typeId: +value.typeId,
+        priorityId: +value.priorityId,
+      };
 
-  //   onSubmit: (value) => {
-  //     const taskData: any = {
-  //
-  //     };
-
-  //
-  //
-  // });
+      createTask(taskData)
+        .then(() => {
+          dispatch(deleteAsigness());
+          navigate("/home")
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+  });
 
   return (
     <div>
       <h1>Create Task</h1>
-      <form>
+      <form onSubmit={formik.handleSubmit}>
         <div className="row mt-3">
           <div className="col-6">
             <div className="form-group">
               <p className="fs-4">Project</p>
-              <select className="form-control fs-4">
-              {projectArr?.map((project: any, index: any) => {
+              <select
+                className="form-control fs-4"
+                {...formik.getFieldProps("projectId")}
+              >
+                {projectArr?.map((project: any, index: any) => {
                   return (
                     <option key={index} value={project.id}>
                       {project.projectName}
@@ -111,7 +164,11 @@ function CreateTask() {
           <div className="col-6">
             <div className="form-group">
               <p className="fs-4">Task name</p>
-              <input type="text" className="form-control fs-4" />
+              <input
+                {...formik.getFieldProps("taskName")}
+                type="text"
+                className="form-control fs-4"
+              />
             </div>
           </div>
         </div>
@@ -119,21 +176,52 @@ function CreateTask() {
           <div className="col-6">
             <div className="form-group">
               <p className="fs-4">Status</p>
-              <select className="form-control fs-4">
-                
+              <select
+                {...formik.getFieldProps("statusId")}
+                className="form-control fs-4"
+              >
+                {taskStatusArr?.map((status: any, index: any) => {
+                  return (
+                    <option key={index} value={status.statusId}>
+                      {status.statusName}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           </div>
           <div className="col-3">
             <div className="form-group">
               <p className="fs-4">Priority</p>
-              <select className="form-control fs-4"></select>
+              <select
+                {...formik.getFieldProps("priorityId")}
+                className="form-control fs-4"
+              >
+                {taskPriorityArr?.map((priority: any, index: any) => {
+                  return (
+                    <option key={index} value={priority.priorityId}>
+                      {priority.priority}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
           </div>
           <div className="col-3">
             <div className="form-group">
               <p className="fs-4">Task type</p>
-              <select className="form-control fs-4"></select>
+              <select
+                {...formik.getFieldProps("typeId")}
+                className="form-control fs-4"
+              >
+                {taskTypeArr?.map((type: any, index: any) => {
+                  return (
+                    <option key={index} value={type.id}>
+                      {type.taskType}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
           </div>
         </div>
@@ -147,11 +235,17 @@ function CreateTask() {
                   allowClear
                   style={{ width: "100%" }}
                   placeholder="Please select"
-                  defaultValue={["a10", "c12"]}
-                  options={assignessOptions}
-                  onSearch={()=>{}}
-                  onChange={()=>{}}
-                  onSelect={()=>{}}
+                  options={userSearchResult?.map((user, index) => {
+                    return {
+                      label: user.name,
+                      value: user.userId,
+                    };
+                  })}
+                  optionFilterProp="label"
+                  onSelect={(value)=>{
+                    const action=addAsignees(value);
+                    dispatch(action);
+                  }}
                 />
               </Space>
             </div>
@@ -169,19 +263,31 @@ function CreateTask() {
           <div className="col-6">
             <div className="form-group">
               <p className="fs-4">Originial Estimate</p>
-              <input type="text" className="form-control fs-4" />
+              <input
+                {...formik.getFieldProps("originalEstimate")}
+                type="text"
+                className="form-control fs-4"
+              />
             </div>
           </div>
           <div className="col-3">
             <div className="form-group">
               <p className="fs-4">Time spent</p>
-              <input type="text" className="form-control fs-4" />
+              <input
+                {...formik.getFieldProps("timeTrackingSpent")}
+                type="text"
+                className="form-control fs-4"
+              />
             </div>
           </div>
           <div className="col-3">
             <div className="form-group">
               <p className="fs-4">Time remaining</p>
-              <input type="text" className="form-control fs-4" />
+              <input
+                {...formik.getFieldProps("timeTrackingRemaining")}
+                type="text"
+                className="form-control fs-4"
+              />
             </div>
           </div>
         </div>

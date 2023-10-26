@@ -31,8 +31,8 @@ function InfoMain(props: any) {
         <div className={css["avatar-group"]}>
           {renderAvatar()}
         </div>
-        <div className={css["text"]}>Only My Issues</div>
-        <div className={css["text"]}>Recently Updated</div>
+        <a className={css["text"]}>Only My Issues</a>
+        <a className={css["text"]}>Recently Updated</a>
       </div>
     </div>
   );
