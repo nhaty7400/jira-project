@@ -17,7 +17,6 @@ import { Tag } from "antd";
 import EditIcon from "../../assets/icons/edit.icon";
 import DeleteIcon from "../../assets/icons/delete.icon";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/config-store";
 import { useDispatch } from "react-redux";
 import {
@@ -221,7 +220,7 @@ const Home: React.FC = () => {
     {
       title: "Creator",
       key: "creator",
-      render: ( record: DataType, index: number) => {
+      render: (_, record: DataType, index: number) => {
         return <Tag key={index} color="green">{record.creator?.name}</Tag>;
       },
       sorter: (item2, item1) => {
@@ -237,7 +236,7 @@ const Home: React.FC = () => {
       title: "Members",
       key: "members",
       width: "30%",
-      render: ( record: DataType, index: number) => {
+      render: (_, record: DataType, index: number) => {
         return (
           <div key={index}>
             {record.members?.slice(0, 3).map((member, index) => {

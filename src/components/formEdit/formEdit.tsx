@@ -121,7 +121,7 @@ function FormEdit(props: any) {
         <p className="fs-4">Description</p>
         <Editor
           id="description"
-          onInit={(evt, editor) => (editorRef.current = editor)}
+          onInit={( editor) => (editorRef.current = editor)}
           initialValue={data.description}
           init={{
             height: 300,
