@@ -59,3 +59,13 @@
     color: red;
     font-size: 1.6rem;
 }
+
+.notice{
+    display: flex;
+    justify-content: center;
+    font-size: 1.6rem;
+    .notice-link{
+        margin-left: 0.5rem;
+        text-decoration: none;
+    }
+}

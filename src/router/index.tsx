@@ -41,6 +41,6 @@ export const router = createBrowserRouter([
       { path: "editTask/:taskId", element: <EditTask /> },
     ],
   },
-  { path: "/", element: <Login /> },
-  { index: true, path: "register", element: <Register /> },
+  { index: true, path: "/", element: <Login /> },
+  { path: "register", element: <Register /> },
 ]);

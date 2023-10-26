@@ -1,7 +1,7 @@
 import css from "./login.module.scss"
 import { useFormik } from "formik";
 import * as Y from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { userLogin } from "../../services/user.service";
 import { setLocalStorage } from "../../utils";
 import { ACCESS_TOKEN, EMAIL } from "../../constants";
@@ -96,6 +96,9 @@ function Login() {
                 <button className={css["submit-button"]} type="submit">
                   Submit
                 </button>
+            </div>
+            <div className={css["notice"]}>
+              Don't have an account ? <Link className={css["notice-link"]} to="register">Click here</Link>
             </div>
           </div>
         </div>
