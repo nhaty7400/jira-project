@@ -1,4 +1,4 @@
-import React from "react";
+
 import css from "./side-bar.module.scss";
 import SearchIcon from "../../../assets/icons/search.icon";
 import AddIcon from "../../../assets/icons/add.icon";

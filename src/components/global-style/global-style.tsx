@@ -1,4 +1,4 @@
-import React, { Fragment, PropsWithChildren } from "react";
+import { Fragment, PropsWithChildren } from "react";
 import "./global-style.scss";
 
 

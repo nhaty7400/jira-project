@@ -1,5 +1,4 @@
 import {
-  Button,
   Drawer,
 } from "antd";
 import { useAppSelector } from "../redux/config-store";
@@ -7,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { closeDrawer } from "../redux/slice/drawer.slice";
 import FormEdit from "../components/formEdit/formEdit";
 
-function DrawerCyber(props: any) {
+function DrawerCyber() {
   let { visible,projectValue } = useAppSelector(
     (state) => state.drawerSlice
   );

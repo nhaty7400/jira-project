@@ -1,8 +1,7 @@
 import { Suspense } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import ScrollToTop from "../../components/scroll-to-top/scroll-to-top";
 import SideBar from "./side-bar/side-bar";
-import css from "./base.template.scss";
 import DrawerCyber from "../../hoc/drawer";
 
 function BaseTemplate() {

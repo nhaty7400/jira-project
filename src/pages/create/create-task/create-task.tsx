@@ -235,7 +235,7 @@ function CreateTask() {
                   allowClear
                   style={{ width: "100%" }}
                   placeholder="Please select"
-                  options={userSearchResult?.map((user, index) => {
+                  options={userSearchResult?.map((user) => {
                     return {
                       label: user.name,
                       value: user.userId,
@@ -296,7 +296,7 @@ function CreateTask() {
             <p className="fs-4">Desciption</p>
             <Editor
               id="description"
-              onInit={(evt, editor) => (editorRef.current = editor)}
+              onInit={( editor) => (editorRef.current = editor)}
               initialValue=""
               init={{
                 height: 300,

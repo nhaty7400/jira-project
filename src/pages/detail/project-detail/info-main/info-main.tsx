@@ -1,4 +1,4 @@
-import React from "react";
+
 import css from "./info-main.module.scss";
 import { SearchOutlined } from "@ant-design/icons";
 

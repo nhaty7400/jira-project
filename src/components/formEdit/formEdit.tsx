@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef} from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useAppSelector } from "../../redux/config-store";
 import { useFormik } from "formik";
-import * as Y from "yup";
 import {
   getAllProject,
   getProjectCategory,

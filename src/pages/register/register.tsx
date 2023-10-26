@@ -56,7 +56,7 @@ function Register() {
       };
 
       signup(data)
-        .then((resp) => {
+        .then(() => {
           alert("Ok");
           navigate("/");
         })

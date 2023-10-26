@@ -8,7 +8,6 @@ import {
   getProjectCategory,
 } from "../../../services/project.service";
 import { setprojectCategoryArr } from "../../../redux/slice/project.slice";
-import css from "./create-project.module.scss";
 
 
 
@@ -62,7 +61,7 @@ function CreateProject() {
           };
 
           createProjectAuthorize(data)
-            .then((resp) => {
+            .then(() => {
               alert("Create project successfully");
               navigate("/home");
             })
@@ -79,7 +78,7 @@ function CreateProject() {
           <p className="fs-4">Description</p>
           <Editor
             id="description"
-            onInit={(evt, editor) => (editorRef.current = editor)}
+            onInit={(editor) => (editorRef.current = editor)}
             initialValue=""
             init={{
               height: 300,

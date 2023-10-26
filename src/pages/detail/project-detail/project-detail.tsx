@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppSelector } from "../../../redux/config-store";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getProjectDetail } from "../../../services/project.service";
 import InfoMain from "./info-main/info-main";
 import Content from "./content/content";

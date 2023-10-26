@@ -16,7 +16,7 @@ import type { FilterConfirmProps } from "antd/es/table/interface";
 import { Tag } from "antd";
 import EditIcon from "../../assets/icons/edit.icon";
 import DeleteIcon from "../../assets/icons/delete.icon";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/config-store";
 import { useDispatch } from "react-redux";
@@ -63,7 +63,6 @@ const Home: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
 
   const data: DataType[] = useAppSelector((state) => {
     return state.projectSlice.listProject;
@@ -201,7 +200,7 @@ const Home: React.FC = () => {
       title: "Project Name",
       dataIndex: "projectName",
       key: "projectName",
-      render: (text: any, record: any, index: any) => {
+      render: (text: any, record: any) => {
         return <Link style={{textDecoration:"none"}} to={`/projectDetail/${record.id}`}>{text}</Link>;
       },
       sorter: (item2, item1) => {
@@ -222,8 +221,8 @@ const Home: React.FC = () => {
     {
       title: "Creator",
       key: "creator",
-      render: (text: any, record: DataType, index: number) => {
-        return <Tag color="green">{record.creator?.name}</Tag>;
+      render: ( record: DataType, index: number) => {
+        return <Tag key={index} color="green">{record.creator?.name}</Tag>;
       },
       sorter: (item2, item1) => {
         let creator1 = item1.creator?.name.trim().toLocaleLowerCase();
@@ -238,9 +237,9 @@ const Home: React.FC = () => {
       title: "Members",
       key: "members",
       width: "30%",
-      render: (text: any, record: DataType, index: number) => {
+      render: ( record: DataType, index: number) => {
         return (
-          <div>
+          <div key={index}>
             {record.members?.slice(0, 3).map((member, index) => {
               return (
                 <Popover
@@ -321,7 +320,7 @@ const Home: React.FC = () => {
               content={() => {
                 return (
                   <AutoComplete
-                    options={searchResult?.map((user, index) => {
+                    options={searchResult?.map((user) => {
                       return {
                         label: user.name,
                         value: user.userId.toString(),
@@ -335,7 +334,7 @@ const Home: React.FC = () => {
                         userId: valueSelect,
                       };
                       assignUserProject(data)
-                        .then((resp) => {
+                        .then(() => {
                           (async () => {
                             const resp = await getAllProject();
                             dispatch(setListProject(resp.content));
@@ -372,9 +371,9 @@ const Home: React.FC = () => {
       title: "Action",
       dataIndex: "",
       key: "",
-      render: (text: any, record: DataType, index: number) => {
+      render: (record: DataType,index:any) => {
         return (
-          <div>
+          <div key={index}>
             <button
               onClick={() => {
                 const action = {
