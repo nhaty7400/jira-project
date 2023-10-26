@@ -78,7 +78,7 @@ function CreateProject() {
           <p className="fs-4">Description</p>
           <Editor
             id="description"
-            onInit={(editor) => (editorRef.current = editor)}
+            onInit={(_,editor) => (editorRef.current = editor)}
             initialValue=""
             init={{
               height: 300,

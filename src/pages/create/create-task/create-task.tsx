@@ -295,7 +295,7 @@ function CreateTask() {
             <p className="fs-4">Desciption</p>
             <Editor
               id="description"
-              onInit={( editor) => (editorRef.current = editor)}
+              onInit={( _,editor) => (editorRef.current = editor)}
               initialValue=""
               init={{
                 height: 300,
